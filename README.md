@@ -3,6 +3,6 @@
 
 所用到的开源项目：
 
-yt-dlp: https://github.com/yt-dlp/yt-dlp
+[yt-dlp](https://github.com/yt-dlp/yt-dlp)
 
-mpv: https://github.com/mpv-player/mpv
+[mpv](https://github.com/mpv-player/mpv)
