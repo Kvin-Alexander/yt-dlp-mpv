@@ -16,6 +16,7 @@
 
 
 int main() {
+	//检测时间
 	auto now = std::chrono::system_clock::now();
 	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 	std::tm local_time;
@@ -30,7 +31,6 @@ int main() {
 	//2.yt-dlp解析网址，下载视频
 	std::string downloadCommand = "part.yt-dlp\\yt-dlp -o \"" + name + "\" " + url;// +" >nul 2>nul";
 	system(downloadCommand.c_str());
-	//假设下载的视频文件名为downloaded_video.mp4
 	//3.运行视频
 	std::string command3 = "part.mpv\\mpv \"" + name + "\""; 
 	system(command3.c_str());
