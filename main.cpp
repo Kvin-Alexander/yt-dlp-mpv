@@ -11,6 +11,29 @@
 4.关闭mpv窗口后删除视频
 */
 
+//part.yt-dlp
+void downloadVideo(std::string url, std::string name) {
+	std::string command = "part.yt-dlp\\yt-dlp -o \"" + name + "\" " + url;
+	system(command.c_str());
+}
+
+//part.mpv
+void playVideo(std::string name) {
+	std::string command = "part.mpv\\mpv \"" + name + "\"";
+	system(command.c_str());
+}
+
+//part.delete
+void deleteVideo(std::string name) {
+	std::cout << "是否删除视频?(y/n)";
+	char choice[4];
+	std::cin >> choice;
+	if ('y' == choice[0]) {
+		std::string command = "del \"" + name + "\"";
+		system(command.c_str());
+	}
+}
+
 
 int main() {
 	//检测时间
@@ -26,22 +49,11 @@ int main() {
 	std::string url;
 	std::cin >> url;
 	//2.yt-dlp解析网址，下载视频
-	std::string downloadCommand = "part.yt-dlp\\yt-dlp -o \"" + name + "\" " + url;// +" >nul 2>nul";
-	system(downloadCommand.c_str());
+	downloadVideo(url, name);
 	//3.运行视频
-	std::string command3 = "part.mpv\\mpv \"" + name + "\""; 
-	system(command3.c_str());
+	playVideo(name);
 	//4.删除视频
-	std::cout << "是否删除视频文件？（y/n） ";
-	char choice[4];
-	std::cin >> choice;
-	if ('y' == choice[0]) {
-		std::cout << "正在删除文件..." << std::endl;
-		std::string deleteCommand = "del \"" + name + "\"";
-		system(deleteCommand.c_str());
-	}
-
-
+	deleteVideo(name);
 
 
 	return 0;
