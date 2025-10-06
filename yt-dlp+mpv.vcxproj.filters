@@ -30,7 +30,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\EVA-WallPaper\v2.png">
+    <Image Include="4otjl-1lmlv-001.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

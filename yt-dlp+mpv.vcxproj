@@ -133,7 +133,7 @@
     <ResourceCompile Include="yt-dlp+mpv2.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\EVA-WallPaper\v2.png" />
+    <Image Include="4otjl-1lmlv-001.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
