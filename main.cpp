@@ -3,6 +3,7 @@
 #include<string>
 #include<chrono>
 #include<ctime>
+#include<algorithm>
 
 /*
 1.用户输入网址
@@ -12,8 +13,8 @@
 */
 
 //解析视频流
-std::string executeCommand(std::string url) {
-	std::string command = "part.yt-dlp\\yt-dlp -g  \""  + url + "\"";
+std::string executeCommand_video(std::string url) {
+	std::string command = "part.yt-dlp\\yt-dlp -g -f bestvideo \""  + url + "\"";
 
 	char buffer[512];
 	std::string result;
@@ -31,19 +32,43 @@ std::string executeCommand(std::string url) {
 		result.pop_back();
 	}
 
+	result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
+	result.erase(std::remove(result.begin(), result.end(), '\r'), result.end());
+
+	return result;
+}
+
+//解析音频流
+std::string executeCommand_audio(std::string url) {
+	std::string command = "part.yt-dlp\\yt-dlp -g -f bestaudio \"" + url + "\"";
+	char buffer[512];
+	std::string result;
+	FILE* pipe = _popen(command.c_str(), "r");
+	if (!pipe) return "";
+	while (fgets(buffer, sizeof(buffer), pipe)) {
+		result += buffer;
+	}
+	std::cout << result << std::endl;
+	_pclose(pipe);
+	if (!result.empty() && result.back() == '\n') {
+		result.pop_back();
+	}
+	result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
+	result.erase(std::remove(result.begin(), result.end(), '\r'), result.end());
+
 	return result;
 }
 
 //part.yt-dlp.stream
-std::string streamVideo(std::string url) {
-	std::string streamurl;
-	streamurl = executeCommand(url);
-	return streamurl;
-}
+/*std::string streamVideo(std::string url) {
+	std::string streamurl_video,streamurl_audio;
+	streamurl_video = executeCommand_video(url);
+	streamurl_audio = executeCommand_audio(url);
+}*/
 
 //part.mpv
-void playVideo(std::string streamurl) {
-	std::string command = "part.mpv\\mpv \"" + streamurl + "\"";
+void playVideo(std::string streamurl_video,std::string streamurl_audio) {
+	std::string command = "part.mpv\\mpv \"" + streamurl_video + "\" --audio-file=\"" + streamurl_audio + "\"";
 	system(command.c_str());
 }
 
@@ -73,10 +98,12 @@ int main() {
 	std::string url;
 	std::cin >> url;
 	//2.yt-dlp解析网址
-	std::string streamurl;
-	streamurl = streamVideo(url);
+	std::string streamurl_video,streamurl_audio;
+	//streamurl = streamVideo(url);
+	streamurl_video = executeCommand_video(url);
+	streamurl_audio = executeCommand_audio(url);
 	//3.运行视频
-	playVideo(streamurl);
+	playVideo(streamurl_video,streamurl_audio);
 	//4.视频处理
 	downloadVideo(url, name);
 
