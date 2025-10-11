@@ -11,25 +11,49 @@
 4.关闭mpv窗口后删除视频
 */
 
-//part.yt-dlp
-void downloadVideo(std::string url, std::string name) {
-	std::string command = "part.yt-dlp\\yt-dlp -o \"" + name + "\" " + url;
-	system(command.c_str());
+//解析视频流
+std::string executeCommand(std::string url) {
+	std::string command = "part.yt-dlp\\yt-dlp -g  \""  + url + "\"";
+
+	char buffer[512];
+	std::string result;
+
+	FILE* pipe = _popen(command.c_str(),"r");
+	if (!pipe) return "";
+
+	while (fgets(buffer, sizeof(buffer), pipe)){
+		result += buffer;
+	}
+	std::cout << result << std::endl;
+	_pclose(pipe);
+
+	if (!result.empty() && result.back() == '\n') {
+		result.pop_back();
+	}
+
+	return result;
+}
+
+//part.yt-dlp.stream
+std::string streamVideo(std::string url) {
+	std::string streamurl;
+	streamurl = executeCommand(url);
+	return streamurl;
 }
 
 //part.mpv
-void playVideo(std::string name) {
-	std::string command = "part.mpv\\mpv \"" + name + "\"";
+void playVideo(std::string streamurl) {
+	std::string command = "part.mpv\\mpv \"" + streamurl + "\"";
 	system(command.c_str());
 }
 
 //part.delete
-void deleteVideo(std::string name) {
-	std::cout << "是否删除视频?(y/n)";
+void downloadVideo(std::string url,std::string name) {
+	std::cout << "是否下载视频?(y/n)";
 	char choice[4];
 	std::cin >> choice;
 	if ('y' == choice[0]) {
-		std::string command = "del \"" + name + "\"";
+		std::string command = "part.yt-dlp\\yt-dlp --quiet --no-progress -o \"" + name + "\" " + url + "";
 		system(command.c_str());
 	}
 }
@@ -48,12 +72,13 @@ int main() {
 	std::cout << "请输入视频网址:";
 	std::string url;
 	std::cin >> url;
-	//2.yt-dlp解析网址，下载视频
-	downloadVideo(url, name);
+	//2.yt-dlp解析网址
+	std::string streamurl;
+	streamurl = streamVideo(url);
 	//3.运行视频
-	playVideo(name);
-	//4.删除视频
-	deleteVideo(name);
+	playVideo(streamurl);
+	//4.视频处理
+	downloadVideo(url, name);
 
 
 	return 0;
